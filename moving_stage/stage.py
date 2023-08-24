@@ -6,7 +6,7 @@ import argparse
 
 print('open serial port')
 
-ser = serial.Serial(port='/dev/ttyS0', baudrate=9600, timeout=1)
+ser = serial.Serial(port='/dev/ttyS3', baudrate=9600, timeout=1)
 
 def sendCommand(ser, data):
     ser.write((data+'\r').encode())

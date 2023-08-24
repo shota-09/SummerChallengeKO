@@ -1,0 +1,170 @@
+\subsection{Windows10でのインストール}
+Windows10上Windows Subsystem for Linux (WSL, 仮想的なLinux環境のようなもの) を構築し, そのlinux環境の上でROOTをインストール, 実行する.2022年3月現在,WSLには2つのバージョンがあり, それぞれWSL, WSL2と呼称されている.ここではWSL2ではなくWSLを用いたROOTのインストール方法を紹介する.
+
+\subsubsection{WSLの導入}
+まず, Windows 側で Linux Subsystem を有効化します.
+\begin{enumerate}
+    \item スタートボタンを右クリックし, 「アプリと機能」をクリックします.
+    \item 右上の「プログラムと機能」をクリックします.
+    \item 左サイドバーの「Windows の機能の有効化または無効化」をクリックします.
+    \item 「Windows Subsystem for Linux」を探して, チェックを入れます.
+    \item 「OK」を押すと, インストールが始まります.インストール後, 再起動します.
+\end{enumerate}
+
+\subsubsection{Ubuntuのインストール}
+\begin{enumerate}
+    \item Microsoft Store で「WSL」と検索します.もしくは「Ubuntu」.
+    \item アプリの中から「Ubuntu 20.04」を探し, インストールします.
+    \item インストール作業が終わったら, スタートに追加される「Ubuntu 20.04」をを起動します.
+    \item ユーザー名とパスワード を要求されるため, プロンプトに従って入力していきます.
+\end{enumerate}
+\begin{lstlisting}[caption=表示されるスクリプト例]
+Installing, this may take a few minutes...
+Please create a default UNIX user account. The username does not need to match your Windows username.
+For more information visit: https://aka.ms/wslusers
+Enter new UNIX username: [user name]
+Enter new UNIX password: [password]
+Retype new UNIX password: [password]
+passwd: password updated succsessfully
+Installation successful!
+To run a command as administrator (user ``root''), use ``sudo''.
+See ``man sudo_root'' for details.
+\end{lstlisting}
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item パッケージのアップデート\\
+        パッケージのアップデートは日々行ったほうが良いです.
+\end{enumerate}
+\begin{lstlisting}
+$ sudo apt update
+$ sudo apt upgrade
+\end{lstlisting}
+
+\subsubsection{X windowのインストール}
+\begin{enumerate}
+    \item \url{https://sourceforge.net/projects/vcxsrv/} にアクセスし, 「Download」をクリックします.
+    \item インストーラを起動し, オプションやインストール先などを指定してインストールします.
+        \begin{itemize}
+            \item Installation Option : 全てにチェックする. (Full)
+            \item Installation Folder : C:¥Program File¥VcXsrv
+        \end{itemize}
+    \item インストール作業が終わったら, スタートに追加される「VcXsrv」をを起動します.
+    \item 起動するとウィザード画面が表示される.それぞれ選択し, 設定を完了させます.
+        \begin{itemize}
+            \item Display settings : 好きなもので
+            \item Client startup : 次へ (start no client）
+            \item Extra settings : 次へ (Clipboard - Primary Selection, Native opengl
+            \item Save configuration : 「Save configuration」をクリック
+        \end{itemize}
+    \item システムトレイにVcXsrvのアイコンが表示されていれば OK です.
+    \item WSLにX window serverをインストールする
+        \begin{itemize}
+            \item Ubuntuを起動します
+            \item 以下を実行し, インストールを開始します
+                \begin{lstlisting}
+$ sudo apt install xfce4-terminal xfce4 x11-apps
+                \end{lstlisting}
+            \item \textasciitilde/bashrcに以下を追記します
+                \begin{lstlisting}
+export DISPLAY=:0.0
+                \end{lstlisting}
+            \item 以下を実行します
+                \begin{lstlisting}
+$ source ~/.bashrc
+                \end{lstlisting}
+        \end{itemize}
+    \item 動作確認
+        \begin{itemize}
+            \item 以下を実行し, 目玉が表示されたらインストールが正常に完了しています
+                \begin{lstlisting}
+$ xeyes
+                \end{lstlisting}
+        \end{itemize}
+\end{enumerate}
+
+\subsubsection{ROOTのビルド}
+この項は\url{}を参考に書かれています.\\
+ROOTをUbuntu上で動かすにはあらかじめいくつかのパッケージをインストールしておく必要があります.次のURLにあるUbuntuの項のパッケージをインストールしてください.\\
+\url{https://root.cern/install/dependencies/}\\
+例としては以下の通りです.
+\begin{lstlisting}
+$ sudo apt-get install dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev libxft-dev libxext-dev python libssl-dev
+\end{lstlisting}
+依存関係のパッケージが揃ったのでビルドを進めます.ビルドの方法は\url{https://root.cern/install/build_from_source/#quick-start}に全て書いてあります.例を以下に示します.
+\begin{lstlisting}
+$ cd ~
+$ mkdir root_build
+$ git clone --branch latest-stable https://github.com/root-project/root.git root_src
+$ cd root_build
+$ sudo cmake -DCMAKE_INSTALL_PREFIX=/opt/root ../root_src
+$ sudo cmake --build . --target install -j4
+\end{lstlisting}
+ビルドが成功したら, パスを通して終了です.
+\$HOME/.bashrcに以下を追記し, シェルを再起動します.
+\begin{lstlisting}
+$ source /opt/root/bin/thisroot.sh
+\end{lstlisting}
+
+
+\clearpage
+\subsection{MacOSでのインストール}
+\subsubsection{Homebrewのインストール}
+Homebrew は macOS 用のパッケージマネージャーです.
+Homebrew で ROOT ビルドに必要な CMake をインストールします.\par
+Homebrew を使うには, Xcode の Command Line Tools が必要になります.
+ターミナルで次のコマンドを実行し, Xcode をインストールします.
+\begin{lstlisting}
+$ xcode-select --install
+\end{lstlisting}
+インストーラーの指示にしたがって, インストールを完了させます.
+正常にインストールされていることを確認するため, 
+\begin{lstlisting}
+$ xcode-select -v
+\end{lstlisting}
+を実行します.バージョンが表示されていればインストール完了です.\par
+次に, Homebrew をインストールします.
+\url{https://brew.sh/index_ja.html}
+上記のURLにあるコマンドをターミナルに入力します.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=14cm]{../Homebrew.png}
+    \caption{HomebrewのHP画面.画面下のコマンドをコピーしてターミナル上で実行する.}
+\end{figure}
+\begin{lstlisting}[caption=Homebrewインストール時のスクリプト]
+...
+==> Installation successful!
+==> Homebrew has enabled anonymous aggregate formulae and cask analytics.
+Read the analytics documentation (and how to opt-out) here:
+https://docs.brew.sh/Analytics
+==> Homebrew is run entirely by unpaid volunteers. Please consider donating:
+https://github.com/Homebrew/brew#donations
+==> Next steps:
+- Run `brew help` to get started
+- Further documentation:
+https://docs.brew.sh
+\end{lstlisting}
+が表示されれば, インストール完了です.\par
+
+\subsubsection{CMakeのインストール}
+Homebrew を用いて, CMakeをインストールします.
+\begin{lstlisting}
+$ brew install cmake
+\end{lstlisting}
+を実行すると, CMakeがインストールできます.
+
+\subsubsection{ROOTのビルド}
+\url{https://root.cern/install/build_from_source/#quick-start}に全て書いてあります.
+ここでは例として, /opt/root をインストールディレクトリとした場合のビルド方法を示します.
+\begin{lstlisting}
+$ cd ~
+$ mkdir root_build
+$ git clone --branch latest-stable https://github.com/root-project/root.git root_src
+$ cd root_build
+$ sudo cmake -DCMAKE_INSTALL_PREFIX=/opt/root ../root_src
+$ sudo cmake --build . --target install -j4
+\end{lstlisting}
+ビルドが成功したら, パスを通して終了です.
+\$HOME/.zshrcに以下を追記し, シェルを再起動します.
+\begin{lstlisting}
+$ source /opt/root/bin/thisroot.sh
+\end{lstlisting}

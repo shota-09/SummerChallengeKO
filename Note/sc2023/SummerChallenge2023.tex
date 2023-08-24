@@ -1,0 +1,163 @@
+\documentclass[uplatex,10pt,a4j]{jsarticle}
+%\documentclass[10pt]{ujarticle}
+\usepackage[top=30truemm, bottom=30truemm, left=25truemm, right=25truemm]{geometry}
+\usepackage{here}
+\usepackage{listings}
+\usepackage{ascmac}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{url}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage[dvipdfmx]{graphicx,color}
+%ktaniguc insert
+\usepackage[cc]{titlepic}
+\usepackage{wallpaper}
+%ktaniguc end
+%\usepackage[dviout]{graphicx}
+\lstset{
+language=c,
+basicstyle=\ttfamily\footnotesize,
+commentstyle=\textit,
+classoffset=1,
+keywordstyle=\bfseries,
+frame=tb,
+framesep=5pt,
+showstringspaces=false,
+numbers=left,
+stepnumber=1,
+numberstyle=\tiny,
+tabsize=2,
+breaklines = true,
+lineskip=-0.5ex
+}
+
+
+\begin{document}
+\begin{titlepage}
+  \title{SummerChallenge2023 \\ \Huge 量子の波動性と粒子性}
+  \author{教員 : 山崎祐司, 河野能知 \\TA : 西, 青木, 豊田}
+  \date{2023年8月18日〜26日}
+  \maketitle
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\section{目的}
+光には, 波動性と粒子性の2重性がある.今回の実験では, 光の粒子性または波動性のどちらか一方が顕著に現れる現象ではなく, 光が両方の性質を同時にもっていると考えざるを得ないということを検証する.
+
+\section{演習内容}
+
+\subsection{演習１　光子を見る}
+まずは干渉縞を観測する前に, そのために用いる実験装置の使い方や仕組みを学ぶために簡単に光子の測定を行う.今回の実験では光源としてLED,検出器としてMPPC,EASIROCを用いる.それぞれの詳しい説明は後で述べるためここでは省略するが, 演習１でそれぞれの使い方を理解することを目的とする.
+\begin{enumerate}
+  \item LEDをパルスジェネレータを用いて光らせ, それがきちんと光っていることを目視で確認する.
+  \item MPPCのダークカレント(LEDを光らせない状態でのMPPC信号)を見る。
+  \item MPPCで光子を観測する.そのためにはEASIROC,DELAYといったモジュールの使い方を理解して, さらにEASIROCの操作方法を理解する.
+  \item データを解析する.ここで簡単なROOTの使い方を理解する.
+\end{enumerate}
+
+\subsection{演習２　干渉縞を観測する}
+今回の実験のメインテーマとなるスリットを用いた干渉縞の観測を行う.この演習では, 干渉縞を観測できるセットアップとその結果の解析がメインになる.
+\begin{enumerate}
+  \item レーザーポインタを用いてスリットの干渉縞を目視で確認する.実際の測定は暗箱内で行うため, 常にこの干渉縞を観測しているとイメージしながら以降の測定を行ってほしい.
+  \item 2重スリットを用いた干渉実験.まずは干渉縞がMPPCで観測できるようなセットアップにし, 稼働ステージでMPPCを移動させながら測定を行う.
+  1回の移動で動かす距離と測定範囲は, 理論式から明線と暗線の間隔を計算し, そこから決める.
+  \item ROOTを用いて測定データを解析して, 干渉縞のグラフを描く.具体的な流れについては後で説明するためここでは省略する.
+\end{enumerate}
+
+\subsection{演習３　1光子の干渉縞を測定する}
+演習２からの変化として光子数を減らして, 1光子数での干渉縞の観測を目指す.解析手法はほとんど変わらず, 光量を抑える工夫をすればよい.基本的にはLEDへの印加電圧を下げれば光量は減少する. それでも足りなければ適宜工夫する.
+これにより,光子が粒子と波動の両方の性質を持っていることがわかるはずである.
+\clearpage
+
+%%原理
+\input ksc2023_theory.tex
+
+\clearpage
+
+%%実験装置及び測定方法
+\input ksc2023_exp.tex
+
+\clearpage
+\section{データ解析}
+%Gitについて
+\input ksc2023_github.tex
+
+\clearpage
+\input ksc2023_root.tex
+
+\clearpage
+\subsection{Poisson統計}
+めったに起こらない事象を大量に測定した場合、ポアソン分布に従うことが多い.式で表すと, 
+\begin{equation}
+  P\left(n\right)=\frac{\lambda^n e^{-\lambda}}{n!}
+\end{equation}
+で, これは平均$\lambda$回起こる事象がn回起こるときの確率を表す.今回の実験の場合はそれぞれの測定での光子数の分布はPoisson分布に従うと思われる.
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm]{../SummerChallenge_poisson.png}
+    \caption{poisson分布の図}
+    \label{fig:poisson}
+  \end{center}
+\end{figure}
+
+$\lambda$が大きい場合はPoison分布はGauss分布(正規分布)に従う.今回の実験の場合では, それぞれの光子数に対応するピークはGauss分布に従うと思われる.
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=8cm]{../SummerChallenge_gauss.png}
+    \caption{gauss分布の図}
+    \label{fig:gauss}
+  \end{center}
+\end{figure}
+
+\subsection{干渉縞の再現}
+今回の測定データは最初adcの値として保存されており, この値自体に物理的な意味はない.そのため, まずはこの値から光子数に変換する必要がある.やり方としてはそれぞれのピークが光子数に対応しているため, それぞれをガウス分布でフィットして中心値を求める.そのadc値と光子数の関係を直線近似することで横軸をadcから光子数に変換することができる.
+
+そのあと, 変換した後のヒストグラムからMPPCの位置ごとの平均光子数を求めてプロットすることで干渉縞を再現することができる.平均光子数については様々な求め方があるが, 簡単なものについては光子数で重みづけした平均, もう少しちゃんと求める場合には上で述べたように光子数の分布はPoisson分布に従うため, 全体をPoisson分布でフィットすることで求めるほうがよい.
+
+また, 演習３で光子数を減らした場合はフィットで平均光子数を求めることは難しい.その場合は平均光子数ではなく1光子以上のイベント数で考えるとよい.平均光子数そのものではないが, 光子数が少ない場合には平均光子数に比例して1光子以上のイベント数も増加するため, それでも干渉縞を観測することができる.\footnote{物理的な説明をすると, 1光子の干渉と仮定すると明線の部分では光子の存在確率が大きいため, 光子を観測するイベント数が増加する.光子数が増加すると光子数0となるイベントは暗線であっても減少するため, この考え方で解析することは難しくなる.}
+
+\clearpage
+\section{ROOTのインストール}
+\label{sec:root_installation}
+\input ksc2023_root_installation.tex
+
+\clearpage
+\section{まとめ}
+\label{sec:lastsection}
+今回説明できたのはごく基本的な部分のみであり, 今回の実験の解析についてもこれ以上の知識が必要になることがあると思う.c++の知識でわからないことがあれば
+
+\url{http://www7b.biglobe.ne.jp/~robe/cpphtml/}
+の第1部を見ればある程度の情報はのっていると思われる.もし, これにのっていない知識が必要になれば別途調べるか質問してください.
+
+ROOTについての情報は基本的なものは
+
+\url{http://www-ppl.s.chiba-u.jp/~hiroshi/ref/ROOT_text.pdf}
+
+\url{https://www.quark.kj.yamagata-u.ac.jp/~miyachi/ROOT/root.pdf}
+
+, 途中で話した修飾については
+
+\url{http://atlas.kek.jp/comp/ROOT-commands.html}
+
+を見ればある程度一覧になっている.もし, そこにのっていない知識が必要になったときは別途調べるか, 
+
+\url{https://root.cern.ch/guides/users-guide}
+
+のUser's Guideを見ればわかると思うが, User's Guideは英語の上膨大であるため, 適宜調べるのがよいと思う.
+
+また, あまり全てを書きすぎると参加している皆さんが考えることがなくなってしまうため, あえて説明をしていない部分もある.なので, この資料を読んでわからないことがあれば遠慮せずにどんどん聞いてください.
+
+\begin{thebibliography}{9}
+  \bibitem{hamamatsu}浜松ホトニクス\\
+  \url{https://www.hamamatsu.com/jp/ja/product/optical-sensors/mppc/what_is_mp}
+  \bibitem{github}GitHub\\
+  \url{https://tech-blog.rakus.co.jp/entry/20200529/git} (2022/02/23)
+  \bibitem{movingstage}ステージコントローラ　SHOT102\\
+  \url{https://jp.optosigma.com/html/jp/software/motorize/manual_jp/SHOT-102.pdf}
+\end{thebibliography}
+\end{document}
